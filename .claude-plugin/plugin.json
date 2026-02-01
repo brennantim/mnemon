@@ -1,0 +1,14 @@
+{
+  "name": "mnemon",
+  "version": "0.1.0",
+  "description": "Persistent memory for Claude Code. Auto-learns from sessions, surfaces relevant context at startup, and maintains itself over time.",
+  "author": {
+    "name": "Tim Brennan",
+    "url": "https://github.com/brennantim"
+  },
+  "repository": "https://github.com/brennantim/mnemon",
+  "license": "MIT",
+  "keywords": ["memory", "persistent", "mcp", "knowledge", "context"],
+  "mcpServers": "../.mcp.json",
+  "hooks": "../hooks/hooks.json"
+}

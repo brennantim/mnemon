@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mnemon": {
+      "command": "python3",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/src/server.py"]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "mnemon-marketplace",
+  "owner": {
+    "name": "Tim Brennan",
+    "url": "https://github.com/brennantim"
+  },
+  "metadata": {
+    "description": "Persistent memory plugin for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "mnemon",
+      "source": "./",
+      "description": "Persistent memory for Claude Code. Auto-learns, surfaces context, and maintains itself.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["memory", "persistent", "mcp", "knowledge"]
+    }
+  ]
+}
