@@ -11,30 +11,6 @@
         ]
       }
     ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/src/extract.py",
-            "async": true
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/src/extract.py",
-            "async": true
-          }
-        ]
-      }
-    ],
     "SessionEnd": [
       {
         "matcher": "",

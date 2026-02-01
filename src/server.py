@@ -83,14 +83,20 @@ END;
 """
 
 MCP_INSTRUCTIONS = """Mnemon is a persistent memory system. Memories survive across sessions.
+You are the ONLY mechanism for storing memories. There is no background extraction.
+If you don't store it, it's lost.
 
 WHEN TO STORE (mcp__mnemon__remember):
-- User explicitly corrects you or states a preference
+- User explicitly corrects you ("No, I prefer X" / "Actually, do it this way")
 - A technical decision is made with rationale
-- You discover a user preference through feedback
+- You discover a user preference through their feedback or behavior
 - A procedure or workflow proves successful
-- You learn a fact about the user, their projects, or environment
+- You learn a fact about the user, their projects, tools, or environment
 - User says "remember this" or similar
+- A project convention or pattern becomes clear
+- You make a mistake and get corrected (store the correction, not the mistake)
+
+Be proactive. Don't wait for "/remember". If something is worth knowing next session, store it now.
 
 WHEN TO SEARCH (mcp__mnemon__recall):
 - Starting work on a project (recall project-specific knowledge)
@@ -103,8 +109,7 @@ WHEN TO CORRECT (mcp__mnemon__correct):
 - User preferences change
 
 Keep stored content concise: 1-2 sentences max. Write as reusable facts, not narrative.
-Do NOT announce memory operations unless directly relevant to conversation.
-Auto-extraction runs at session end, so you don't need to store routine observations."""
+Do NOT announce memory operations unless directly relevant to conversation."""
 
 mcp = FastMCP("mnemon", instructions=MCP_INSTRUCTIONS)
 

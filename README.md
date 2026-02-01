@@ -2,12 +2,11 @@
 
 Persistent memory for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Remembers what matters across sessions.
 
-Mnemon stores knowledge in a local SQLite database, auto-extracts insights from your sessions, surfaces relevant context at startup, and quietly retires stale memories over time. No Docker, no embeddings server, no external services. Just Python and SQLite.
+Mnemon gives Claude Code a local memory that persists between sessions. It stores knowledge in a SQLite database, surfaces relevant context at startup, and quietly retires stale memories over time. No Docker, no embeddings server, no API keys, no external services. Just Python and SQLite.
 
 ## Features
 
 - **7 MCP tools** for storing, searching, correcting, and relating memories
-- **Auto-extraction** pulls knowledge from session transcripts via Claude Haiku (~$0.002/call, opt-in)
 - **Auto-surfacing** regenerates a context file at session start with your top-scored memories
 - **Auto-maintenance** decays old memories, retires forgotten ones, deduplicates
 - **Slash commands** `/remember`, `/forget`, `/memory-status`, `/memory`
@@ -36,10 +35,6 @@ claude --plugin-dir ./mnemon
 - **Python 3.10+**
 - **Claude Code 1.0.33+** (plugin support)
 - **fastmcp** Python package (`pip install fastmcp`)
-- **anthropic** Python package (`pip install anthropic`) -- only needed for auto-extraction
-- **ANTHROPIC_API_KEY** environment variable -- only needed for auto-extraction
-
-Without the API key, the core memory tools still work. You just lose the auto-learning from session transcripts.
 
 ## Commands
 
@@ -62,17 +57,15 @@ During Session
   |-- 7 MCP tools available: remember, recall, correct, forget,
   |   list_memories, memory_stats, relate
   |-- Claude proactively stores corrections, preferences, and decisions
-  |
-Session Stop
-  |-- extract.py reads last 4000 chars of transcript
-  |-- Calls Haiku to identify knowledge worth keeping
-  |-- Stores up to 5 items per extraction
+  |-- You can also use /remember to store things explicitly
   |
 Session End
   |-- consolidate.py decays 30+ day old unaccessed memories
   |-- Retires memories below 0.1 importance after 90 days
   |-- Deduplicates exact content matches
 ```
+
+Claude is instructed via the MCP server to proactively store knowledge during sessions. When you correct it, state a preference, make a technical decision, or establish a workflow, it stores that without being asked. You can also store things explicitly with `/remember`.
 
 ### Memory Scoring
 
@@ -97,14 +90,11 @@ Each memory has a composite score: `importance * confidence * (1 + access_count 
 
 ### Storage
 
-All data stays local. The database lives at `.claude/memory/mnemon.db` in your project directory. Nothing is sent anywhere except the Haiku extraction call (which only sends the last 4000 characters of your session transcript, and only if you have `ANTHROPIC_API_KEY` set).
+All data stays local. The database lives at `.claude/memory/mnemon.db` in your project directory. Nothing is sent anywhere.
 
 Memories are never truly deleted. "Forgetting" marks a memory as superseded, preserving the audit trail. The consolidation hook retires low-value memories after 90 days of zero access.
 
 ## Configuration
-
-### Disable auto-extraction
-Unset `ANTHROPIC_API_KEY` or remove the `Stop` and `PreCompact` hooks.
 
 ### Adjust decay rates
 Edit `src/consolidate.py`:
