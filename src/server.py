@@ -199,6 +199,7 @@ def recall(
     category: str | None = None,
     project: str | None = None,
     limit: int = 10,
+    include_superseded: bool = False,
 ) -> str:
     """Search memories by text query using full-text search.
 
@@ -207,10 +208,13 @@ def recall(
         category: Filter by category (optional).
         project: Filter by project name. Also includes global memories (optional).
         limit: Max results to return (default 10).
+        include_superseded: If true, also search retired/superseded memories (default false).
     """
     db = get_db()
     try:
-        conditions = ["m.superseded_by IS NULL"]
+        conditions: list[str] = []
+        if not include_superseded:
+            conditions.append("m.superseded_by IS NULL")
         params: list = []
 
         if category:
@@ -220,16 +224,17 @@ def recall(
             conditions.append("(m.project = ? OR m.project IS NULL)")
             params.append(project)
 
-        where = " AND ".join(conditions)
+        where = (" AND " + " AND ".join(conditions)) if conditions else ""
 
         # FTS search with ranking
         rows = db.execute(
             f"""SELECT m.id, m.content, m.category, m.project, m.importance,
                        m.confidence, m.access_count, m.created_at,
+                       m.superseded_by,
                        rank AS relevance
                 FROM memories_fts fts
                 JOIN memories m ON m.id = fts.rowid
-                WHERE memories_fts MATCH ? AND {where}
+                WHERE memories_fts MATCH ?{where}
                 ORDER BY rank
                 LIMIT ?""",
             [query] + params + [limit],
@@ -249,7 +254,7 @@ def recall(
 
         results = []
         for r in rows:
-            results.append({
+            entry = {
                 "id": r["id"],
                 "content": r["content"],
                 "category": r["category"],
@@ -258,7 +263,10 @@ def recall(
                 "confidence": r["confidence"],
                 "access_count": r["access_count"],
                 "created_at": r["created_at"],
-            })
+            }
+            if include_superseded and r["superseded_by"] is not None:
+                entry["superseded"] = True
+            results.append(entry)
         return json.dumps(results, indent=2)
     finally:
         db.close()
