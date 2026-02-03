@@ -9,6 +9,5 @@
   "repository": "https://github.com/brennantim/mnemon",
   "license": "MIT",
   "keywords": ["memory", "persistent", "mcp", "knowledge", "context"],
-  "mcpServers": "./.mcp.json",
-  "hooks": "./hooks/hooks.json"
+  "mcpServers": "./.mcp.json"
 }
